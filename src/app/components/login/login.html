@@ -1,0 +1,26 @@
+<div class="container-sm m-auto d-flex flex-column gap-1 justify-content-evenly mt-4">
+    <h3 class="m-auto">Bienvenue</h3>
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="d-flex flex-column gap-3 justify-content-evenly mt-4">
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
+                formControlName="email" required>
+            <label for="floatingInput">Email</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password"
+                formControlName="password">
+            <label for="floatingPassword">Mot de passe</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-50 m-auto" [disabled]="loginForm.invalid">Se connecter</button>
+        @if (loginResponse === 'connected') {
+        <p>Connexion réussie.</p>
+        }
+        @if (loginResponse === 'error') {
+        <p class="text-danger">Erreur lors de la connexion.</p>
+        }
+    </form>
+    <div class="m-auto text-center mt-4">
+        <p>Pas de compte?</p>
+        <p>Merci de contacter l'administration pour la création de votre compte employé.</p>
+    </div>
+</div>
