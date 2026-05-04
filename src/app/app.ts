@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,21 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('m-motors-backoffice');
+
+  constructor(protected auth: AuthService, private router: Router) {
+    this.auth.checkSession();
+  }
+
+  logout(event: Event): void {
+    event.preventDefault();
+
+    this.auth.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
 }

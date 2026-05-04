@@ -8,7 +8,12 @@
       </button>
       <div class="collapse navbar-collapse " id="navbarNav">
         <div class="navbar-nav">
+          @if (!auth.loggedIn()) {
           <a class="nav-link" routerLink="/login">Se connecter</a>
+          }
+          @if (auth.loggedIn()) {
+          <a class="nav-link" href="" (click)="logout($event)">Se déconnecter</a>
+          }
         </div>
 
       </div>

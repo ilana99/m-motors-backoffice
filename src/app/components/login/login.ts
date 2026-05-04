@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { Api } from '../../services/api';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -16,13 +16,13 @@ export class Login {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
 
-  constructor(private apiService: Api) { }
+  constructor(private auth: AuthService) { }
 
   login(): void {
     this.loginResponse.set('');
     const data = this.loginForm.value;
 
-    this.apiService.login(data).subscribe({
+    this.auth.login(data).subscribe({
       next: (response) => {
         if (response.status === 201 || response.status === 200) {
           this.loginResponse.set('connected');
@@ -30,7 +30,7 @@ export class Login {
       },
       error: (error) => {
         this.loginResponse.set('error');
-        console.log(error);
+        console.log('Login or session check failed', error);
       }
     })
   }
