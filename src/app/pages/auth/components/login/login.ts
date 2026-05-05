@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth';
+import { AuthService } from '../../../../services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,10 @@ export class Login {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
 
-  constructor(private auth: AuthService) { }
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) { }
 
   login(): void {
     this.loginResponse.set('');
@@ -25,12 +29,12 @@ export class Login {
     this.auth.login(data).subscribe({
       next: (response) => {
         if (response.status === 201 || response.status === 200) {
-          this.loginResponse.set('connected');
+          this.router.navigate(['/cars']);
         }
       },
       error: (error) => {
         this.loginResponse.set('error');
-        console.log('Login or session check failed', error);
+        console.log(error);
       }
     })
   }

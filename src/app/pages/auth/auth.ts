@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Login } from "../../components/login/login";
+import { Login } from "./components/login/login"
 
 @Component({
   selector: 'app-auth',
@@ -7,4 +7,4 @@ import { Login } from "../../components/login/login";
   templateUrl: './auth.html',
   styleUrl: './auth.scss',
 })
-export class Auth {}
+export class Auth { }

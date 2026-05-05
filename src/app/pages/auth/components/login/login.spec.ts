@@ -1,25 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { Login } from './login';
-import { Api } from '../../services/api';
+import { AuthService } from '../../../../services/auth';
 
 describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
   let loginSpy: any;
+  let routerMock: any;
 
   beforeEach(async () => {
     loginSpy = vi.fn();
+    routerMock = {
+      navigate: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [Login],
       providers: [
-        provideRouter([]),
+        { provide: Router, useValue: routerMock },
         {
-          provide: Api,
+          provide: AuthService,
           useValue: {
             login: loginSpy,
           },
@@ -44,7 +48,7 @@ describe('Login', () => {
       });
     });
 
-    it('should set loginResponse to "connected" on status 200', () => {
+    it('should submit credentials and navigate to cars on status 200', () => {
       loginSpy.mockReturnValue(of({ status: 200 }));
       component.login();
 
@@ -52,14 +56,16 @@ describe('Login', () => {
         email: 'user@test.com',
         password: 'password123',
       });
-      expect(component.loginResponse()).toBe('connected');
+      expect(component.loginResponse()).toBe('');
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
     });
 
-    it('should set loginResponse to "connected" on status 201', () => {
+    it('should navigate to cars on status 201', () => {
       loginSpy.mockReturnValue(of({ status: 201 }));
       component.login();
 
-      expect(component.loginResponse()).toBe('connected');
+      expect(component.loginResponse()).toBe('');
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
     });
 
     it('should set loginResponse to "error" on 401 failure', () => {
@@ -71,7 +77,7 @@ describe('Login', () => {
       expect(component.loginResponse()).toBe('error');
     });
 
-    it('should move from error to connected on a later successful attempt', () => {
+    it('should clear the error and navigate on a later successful attempt', () => {
       loginSpy
         .mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 401 })))
         .mockReturnValueOnce(of({ status: 200 }));
@@ -80,16 +86,18 @@ describe('Login', () => {
       expect(component.loginResponse()).toBe('error');
 
       component.login();
-      expect(component.loginResponse()).toBe('connected');
+      expect(component.loginResponse()).toBe('');
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
     });
 
-    it('should move from connected to error on a later failed attempt', () => {
+    it('should move from success to error on a later failed attempt', () => {
       loginSpy
         .mockReturnValueOnce(of({ status: 201 }))
         .mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 401 })));
 
       component.login();
-      expect(component.loginResponse()).toBe('connected');
+      expect(component.loginResponse()).toBe('');
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
 
       component.login();
       expect(component.loginResponse()).toBe('error');

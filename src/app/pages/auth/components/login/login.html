@@ -12,9 +12,6 @@
             <label for="floatingPassword">Mot de passe</label>
         </div>
         <button type="submit" class="btn btn-primary w-50 m-auto" [disabled]="loginForm.invalid">Se connecter</button>
-        @if (loginResponse() === 'connected') {
-        <p>Connexion réussie.</p>
-        }
         @if (loginResponse() === 'error') {
         <p class="text-danger">Erreur lors de la connexion.</p>
         }

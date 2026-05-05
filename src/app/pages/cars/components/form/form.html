@@ -1,0 +1,118 @@
+<div class="container-sm m-auto d-flex flex-column gap-1 justify-content-evenly mt-4">
+    <div class="d-flex">
+        <button type="button" class="btn btn-lg align-self-start" (click)="closeForm.emit()">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <h3 class="m-auto">{{ mode === 'create' ? 'Ajouter une voiture' : 'Modifier une voiture' }}</h3>
+    </div>
+
+
+    <form class="d-flex flex-column gap-3 justify-content-evenly mt-4" [formGroup]="carsForm" (ngSubmit)="submit()">
+        @if (mode === 'edit') {
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="carId" placeholder="ID" [value]="carId()" disabled>
+            <label for="carId">ID</label>
+        </div>
+        }
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="carBrand" formControlName="brand" placeholder="Ex: Peugeot"
+                [class.is-invalid]="shouldShowError('brand')" required>
+            <label for="carBrand">Marque *</label>
+            @if (shouldShowError('brand')) {
+            <div class="invalid-feedback">La marque est obligatoire.</div>
+            }
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="carModel" formControlName="model" placeholder="Ex: 208"
+                [class.is-invalid]="shouldShowError('model')" required>
+            <label for="carModel">Modèle *</label>
+            @if (shouldShowError('model')) {
+            <div class="invalid-feedback">Le modèle est obligatoire.</div>
+            }
+        </div>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text">€</span>
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="carPrice" placeholder="Ex: 15000"
+                        formControlName="price" min="0" [class.is-invalid]="shouldShowError('price')" required>
+                    <label for="carPrice">Prix *</label>
+                </div>
+            </div>
+            @if (shouldShowError('price')) {
+            <div class="invalid-feedback d-block">
+                @if (carsForm.controls.price.errors?.['required']) {
+                Le prix est obligatoire.
+                } @else if (carsForm.controls.price.errors?.['min']) {
+                Le prix doit être positif.
+                }
+            </div>
+            }
+        </div>
+
+        <div class="form-floating mb-3">
+            <select class="form-select" id="carService" formControlName="service"
+                [class.is-invalid]="shouldShowError('service')" required>
+                <option value="" disabled>Choisir le type de service</option>
+                <option value="Leasing">Location</option>
+                <option value="Sale">Vente</option>
+            </select>
+            <label for="carService">Service *</label>
+            @if (shouldShowError('service')) {
+            <div class="invalid-feedback">Le service est obligatoire.</div>
+            }
+        </div>
+
+        @if (mode === 'edit' && existingImages().length) {
+        <div class="mb-3">
+            <h6 class="mb-3">Images existantes</h6>
+            <div class="d-flex flex-wrap gap-2">
+                @for (image of existingImages(); track image) {
+                <div class="existing-image-wrapper position-relative">
+                    <img [src]="image" class="existing-image rounded border" alt="Image existante">
+                    <button type="button"
+                        class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
+                        (click)="deleteExistingImage(image)" aria-label="Supprimer l'image existante">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        <div class="mb-3">
+            @if (hasTooManyImages()) {
+            <div class="container-sm mt-4 alert alert-danger" role="alert">
+                Vous ne pouvez ajouter que 10 images.
+            </div>
+            }
+
+            <label for="carImages" class="form-label fw-medium">Ajouter des images</label>
+            <input #carImagesInput type="file" class="form-control" id="carImages" name="images" accept="image/*"
+                multiple (change)="updateImages($event)">
+            @if (selectedFiles().length) {
+            <div class="list-group mt-2">
+                @for (selectedFile of selectedFiles(); track selectedFile.url; let index = $index) {
+                <div class="list-group-item d-flex align-items-center justify-content-between gap-2">
+                    <a class="text-truncate" [href]="selectedFile.url" target="_blank">
+                        {{ selectedFile.file.name }}
+                    </a>
+                    <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeImageFromBrowser(index)"
+                        aria-label="Supprimer l'image">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary w-50 m-auto">
+            Enregistrer
+        </button>
+    </form>
+</div>
