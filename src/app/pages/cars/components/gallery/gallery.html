@@ -1,0 +1,55 @@
+<div class="container-fluid m-auto d-flex flex-wrap gap-3 my-4 justify-content-center">
+    @for (car of cars(); track car.id || $index) {
+    <div class="card bg-light" style="width: 18rem;">
+        @if (car.images?.length) {
+        <img [src]="car.images[0]" class="card-img-top gallery-car-image" [alt]="car.brand + ' ' + car.model">
+        } @else {
+        <img src="/car.jpg" class="card-img-top gallery-car-image" [alt]="car.brand + ' ' + car.model">
+        }
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <p class="card-text fw-bold">{{ getServiceLabel(car.service) }}</p>
+                <p class="fst-italic">ID: {{car.id}}</p>
+            </div>
+            <h5 class="card-title">{{ car.brand }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{ car.model }}</h6>
+            @if (car.service === 'Leasing') {
+            <p class="card-text">À partir de <b>{{ car.price }}</b> € / mois</p>
+            } @else {
+            <p class="card-text fw-bold">{{ car.price }} €</p>
+            }
+
+            <div class="d-flex gap-1">
+                <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
+                    data-bs-title="Modifier cette voiture" aria-label="Modifier cette voiture"
+                    (click)="editCar.emit(car)">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
+                    data-bs-title="Modifier le service" aria-label="Modifier le service"
+                    (click)="openServiceModal(car)">
+                    <i class="bi bi-arrow-left-right"></i>
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
+                    data-bs-title="Supprimer cette voiture" aria-label="Supprimer cette voiture"
+                    (click)="openDeleteModal(car)">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+    } @empty {
+    <p class="text-body-secondary">Aucune voiture trouvée.</p>
+    }
+</div>
+
+@if (carToDelete()) {
+<app-modal mode="delete" [car]="carToDelete()" [successMessage]="deleteSuccessMessage()"
+    (closeModal)="closeDeleteModal()" (confirmDelete)="deleteSelectedCar()"></app-modal>
+}
+
+@if (carToChangeService()) {
+<app-modal mode="serviceChange" [car]="carToChangeService()" [successMessage]="serviceChangeSuccessMessage()"
+    (closeModal)="closeServiceModal()" (confirmServiceChange)="changeSelectedCarService()"></app-modal>
+}

@@ -1,0 +1,42 @@
+<div class="modal d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                @if (mode === 'delete') {
+                <h5 class="modal-title">Supprimer la voiture</h5>
+                } @else {
+                <h5 class="modal-title">Changer le service de la voiture</h5>
+                }
+                <button type="button" class="btn-close" aria-label="Close" (click)="closeModal.emit()"></button>
+            </div>
+            <div class="modal-body">
+                @if (successMessage) {
+                <div class="text-center py-3">
+                    <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                    <p class="mb-0 mt-2 fw-semibold text-success">{{ successMessage }}</p>
+                </div>
+                } @else {
+                @if (mode === 'delete') {
+                <p>Voulez-vous vraiment supprimer cette voiture? Cette action est irréversible.</p>
+                } @else {
+                <p>Voulez-vous vraiment changer le type de service de cette voiture?</p>
+                }
+                @if (car && mode === 'delete') {
+                <p class="mb-0 fw-semibold">{{ car.brand }} {{ car.model }}</p>
+                }
+                }
+            </div>
+            @if (!successMessage) {
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal.emit()">Annuler</button>
+                @if (mode === 'delete') {
+                <button type="button" class="btn btn-danger" (click)="confirmDelete.emit()">Supprimer</button>
+                } @else {
+                <button type="button" class="btn btn-primary" (click)="confirmServiceChange.emit()">Changer</button>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop show"></div>
