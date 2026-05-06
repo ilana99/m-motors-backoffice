@@ -3,12 +3,13 @@ import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { Api } from '../services/api';
 
-export const requireAuthGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (route) => {
   const apiService = inject(Api);
   const router = inject(Router);
+  const isLoginPage = route.routeConfig?.path === 'login';
 
   return apiService.me().pipe(
-    map(() => true),
-    catchError(() => of(router.createUrlTree(['/login']))),
+    map(() => isLoginPage ? router.createUrlTree(['/cars']) : true),
+    catchError(() => of(isLoginPage ? true : router.createUrlTree(['/login']))),
   );
 };

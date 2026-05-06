@@ -1,0 +1,43 @@
+<div class="container-sm mt-4">
+    <h3 class="text-center">Profil</h3>
+    @if (user(); as user) {
+    <div class="container w-75 mt-4">
+        <div class="row mb-2 border-bottom">
+            <div class="col-md-6 fw-bold">
+                <p>Nom de famille</p>
+            </div>
+
+            <div class="col-md-6">
+                <p>{{ user.surname }}</p>
+            </div>
+        </div>
+        <div class="row mb-2 border-bottom">
+            <div class="col-md-6 fw-bold">
+                <p>Prénom</p>
+            </div>
+
+            <div class="col-md-6">
+                <p>{{ user.name }}</p>
+            </div>
+        </div>
+        <div class="row mb-2 border-bottom">
+            <div class="col-md-6 fw-bold">
+                <p>Date de naissance</p>
+            </div>
+
+            <div class="col-md-6">
+                <p>{{ user.birthday }}</p>
+            </div>
+        </div>
+        <div class="row border-bottom">
+            <div class="col-md-6 fw-bold">
+                <p>Email</p>
+            </div>
+
+            <div class="col-md-6">
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+    </div>
+    }
+</div>

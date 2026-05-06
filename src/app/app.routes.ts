@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { requireAuthGuard } from './guards/auth.guard';
+import { authGuard } from './guards/auth.guard';
 import { Auth } from './pages/auth/auth';
 import { Cars } from './pages/cars/cars';
+import { Profile } from './pages/profile/profile';
 
 export const routes: Routes = [
     {
@@ -12,11 +13,17 @@ export const routes: Routes = [
     {
         path: 'login',
         component: Auth,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'profil',
+        component: Profile,
+        canActivate: [authGuard],
     },
     {
         path: 'cars',
         component: Cars,
-        canActivate: [requireAuthGuard],
+        canActivate: [authGuard],
     },
     {
         path: '**',
