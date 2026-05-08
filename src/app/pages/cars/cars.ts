@@ -1,6 +1,6 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { Api } from '../../services/api';
 import { Form, CarsFormMode, CarsFormSubmit } from './components/form/form';
@@ -8,7 +8,7 @@ import { Gallery } from './components/gallery/gallery';
 
 @Component({
   selector: 'app-cars',
-  imports: [FormsModule, Form, Gallery],
+  imports: [FormsModule, Form, Gallery, RouterLink],
   templateUrl: './cars.html',
   styleUrl: './cars.scss',
 })
@@ -18,6 +18,7 @@ export class Cars implements OnDestroy {
   selectedCar = signal<any | null>(null);
   errorMessage = signal('');
   successMessage = signal('');
+  showDashboardBackButton = signal(history.state?.fromDashboard === true);
   private successMessageTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(

@@ -1,10 +1,10 @@
 <div class="container-fluid m-auto d-flex flex-wrap gap-3 my-4 justify-content-center">
-    @for (car of cars(); track car.id || $index) {
+    @for (car of getPagedCars(); track car.id || $index) {
     <div class="card bg-light" style="width: 18rem;">
         @if (car.images?.length) {
         <img [src]="car.images[0]" class="card-img-top gallery-car-image" [alt]="car.brand + ' ' + car.model">
         } @else {
-        <img src="/car.jpg" class="card-img-top gallery-car-image" [alt]="car.brand + ' ' + car.model">
+        <img src="/car.jpg" class="card-img-top gallery-car-image" alt="car placeholder">
         }
         <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -43,6 +43,26 @@
     <p class="text-body-secondary">Aucune voiture trouvée.</p>
     }
 </div>
+
+@if (getTotalPages() > 1) {
+<nav aria-label="Pagination des voitures">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" type="button" (click)="goToPage(currentPage - 1)">Précédent</button>
+        </li>
+
+        @for (page of getPages(); track page) {
+        <li class="page-item" [class.active]="page === currentPage">
+            <button class="page-link" type="button" (click)="goToPage(page)">{{ page }}</button>
+        </li>
+        }
+
+        <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+            <button class="page-link" type="button" (click)="goToPage(currentPage + 1)">Suivant</button>
+        </li>
+    </ul>
+</nav>
+}
 
 @if (carToDelete()) {
 <app-modal mode="delete" [car]="carToDelete()" [successMessage]="deleteSuccessMessage()"

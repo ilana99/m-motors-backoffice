@@ -48,7 +48,7 @@ describe('Login', () => {
       });
     });
 
-    it('should submit credentials and navigate to cars on status 200', () => {
+    it('should submit credentials and navigate to dashboard on status 200', () => {
       loginSpy.mockReturnValue(of({ status: 200 }));
       component.login();
 
@@ -57,15 +57,15 @@ describe('Login', () => {
         password: 'password123',
       });
       expect(component.loginResponse()).toBe('');
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
     });
 
-    it('should navigate to cars on status 201', () => {
+    it('should navigate to dashboard on status 201', () => {
       loginSpy.mockReturnValue(of({ status: 201 }));
       component.login();
 
       expect(component.loginResponse()).toBe('');
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
     });
 
     it('should set loginResponse to "error" on 401 failure', () => {
@@ -87,7 +87,7 @@ describe('Login', () => {
 
       component.login();
       expect(component.loginResponse()).toBe('');
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
     });
 
     it('should move from success to error on a later failed attempt', () => {
@@ -97,7 +97,7 @@ describe('Login', () => {
 
       component.login();
       expect(component.loginResponse()).toBe('');
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
 
       component.login();
       expect(component.loginResponse()).toBe('error');

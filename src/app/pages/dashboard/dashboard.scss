@@ -1,0 +1,38 @@
+.dashboard-row {
+    display: grid;
+    grid-template-columns: repeat(4, 18rem);
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.dashboard-card {
+    min-height: 12rem;
+    text-decoration: none;
+}
+
+.dashboard-car-image {
+    height: 12rem;
+    object-fit: cover;
+}
+
+.dashboard-link-card {
+    color: inherit;
+}
+
+.dashboard-clickable-card,
+.dashboard-link-card {
+    cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-row {
+        grid-template-columns: repeat(2, 18rem);
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard-row {
+        grid-template-columns: minmax(0, 18rem);
+    }
+}

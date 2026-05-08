@@ -35,12 +35,24 @@ export class Api {
     return this.Http.get<any>(`${this.apiUrl}/cars`, this.httpOptions);
   }
 
+  findAllClientfiles(): Observable<HttpResponse<any>> {
+    return this.Http.get<any>(`${this.apiUrl}/clientfile`, this.httpOptions);
+  }
+
   findOneCar(id: number): Observable<HttpResponse<any>> {
     return this.Http.get<any>(`${this.apiUrl}/cars/${id}`, this.httpOptions);
   }
 
+  findOneClientfile(id: number): Observable<HttpResponse<any>> {
+    return this.Http.get<any>(`${this.apiUrl}/clientfile/${id}`, this.httpOptions);
+  }
+
   findCarsByService(service: string): Observable<HttpResponse<any>> {
     return this.Http.get<any>(`${this.apiUrl}/cars/service/${encodeURIComponent(service)}`, this.httpOptions);
+  }
+
+  findClientfileByStatus(status: string): Observable<HttpResponse<any>> {
+    return this.Http.get<any>(`${this.apiUrl}/clientfile/status/${encodeURIComponent(status)}`, this.httpOptions);
   }
 
   updateCarService(id: number, service: string): Observable<HttpResponse<any>> {
@@ -54,6 +66,15 @@ export class Api {
 
   updateCar(id: number, data: any): Observable<HttpResponse<any>> {
     return this.Http.patch<any>(`${this.apiUrl}/cars/${id}`, data, this.httpOptions);
+  }
+
+  updateClientfileStatus(id: number, status: string): Observable<HttpResponse<any>> {
+    const params = new HttpParams().set('status', status);
+
+    return this.Http.patch<any>(`${this.apiUrl}/clientfile/${id}/status`, null, {
+      ...this.httpOptions,
+      params,
+    });
   }
 
   getCarImage(id: number, data: any): Observable<HttpResponse<Blob>> {
@@ -73,6 +94,10 @@ export class Api {
 
   deleteCar(id: number): Observable<HttpResponse<any>> {
     return this.Http.delete<any>(`${this.apiUrl}/cars/${id}`, this.httpOptions);
+  }
+
+  deleteClientfile(id: number): Observable<HttpResponse<any>> {
+    return this.Http.delete<any>(`${this.apiUrl}/clientfile/${id}`, this.httpOptions);
   }
 
   me(): Observable<HttpResponse<any>> {
