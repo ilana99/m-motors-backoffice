@@ -21,6 +21,7 @@ describe('Cars', () => {
       findAllCars: vi.fn().mockReturnValue(of({ body: [] })),
     };
     routerMock = {
+      getCurrentNavigation: vi.fn().mockReturnValue(null),
       navigate: vi.fn(),
     };
 

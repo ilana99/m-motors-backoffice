@@ -29,7 +29,7 @@ export class Login {
     this.auth.login(data).subscribe({
       next: (response) => {
         if (response.status === 201 || response.status === 200) {
-          this.router.navigate(['/cars']);
+          this.router.navigate(['/dashboard']);
         }
       },
       error: (error) => {

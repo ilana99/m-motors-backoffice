@@ -3,12 +3,15 @@ import { authGuard } from './guards/auth.guard';
 import { Auth } from './pages/auth/auth';
 import { Cars } from './pages/cars/cars';
 import { Profile } from './pages/profile/profile';
+import { Clientfiles } from './pages/clientfiles/clientfiles';
+import { ClientfileDetailed } from './pages/clientfile-detailed/clientfile-detailed';
+import { Dashboard } from './pages/dashboard/dashboard';
 
 export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'cars',
+        redirectTo: 'dashboard',
     },
     {
         path: 'login',
@@ -16,8 +19,23 @@ export const routes: Routes = [
         canActivate: [authGuard],
     },
     {
+        path: 'dashboard',
+        component: Dashboard,
+        canActivate: [authGuard],
+    },
+    {
         path: 'profil',
         component: Profile,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'clientfiles',
+        component: Clientfiles,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'clientfiles/:id',
+        component: ClientfileDetailed,
         canActivate: [authGuard],
     },
     {
@@ -27,6 +45,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'cars',
+        redirectTo: 'dashboard',
     },
 ];

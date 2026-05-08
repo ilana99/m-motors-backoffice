@@ -1,0 +1,12 @@
+<div class="container-sm d-flex flex-column mt-4">
+    <div class="d-flex align-items-center">
+        @if (showDashboardBackButton) {
+        <button type="button" class="btn btn-lg align-self-start" routerLink="/dashboard"
+            aria-label="Retour au tableau de bord">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        }
+        <h2 class="text-center m-auto">Dossiers clients</h2>
+    </div>
+    <app-gallery></app-gallery>
+</div>
