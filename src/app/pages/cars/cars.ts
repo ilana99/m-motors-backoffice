@@ -91,7 +91,7 @@ export class Cars implements OnDestroy {
 
   private redirectToCars(): void {
     this.closeCarForm();
-    this.router.navigate(['/cars']);
+    this.router.navigate(['/stock']);
   }
 
   private showTemporarySuccessMessage(message: string): void {

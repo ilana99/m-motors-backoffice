@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, signal 
 import Tooltip from 'bootstrap/js/dist/tooltip';
 import { Api } from '../../../../services/api';
 import { Modal } from '../modal/modal';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gallery',
@@ -33,6 +34,7 @@ export class Gallery implements OnInit, OnDestroy {
   constructor(
     private apiService: Api,
     private elementRef: ElementRef<HTMLElement>,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -49,6 +51,9 @@ export class Gallery implements OnInit, OnDestroy {
     this.disposeTooltips();
   }
 
+  navigateToDetailedCarPage(carId: number) {
+    this.router.navigate(['/stock', carId])
+  }
 
   changeService(service: string) {
     this.selectedService.set(service);

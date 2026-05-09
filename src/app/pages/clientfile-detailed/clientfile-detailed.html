@@ -1,7 +1,7 @@
 <div class="container-sm mt-4">
     @if (clientfile(); as clientfile) {
     <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-lg" routerLink="/clientfiles" aria-label="Retour aux dossiers clients">
+        <button type="button" class="btn btn-lg" [routerLink]="getBackLink()" aria-label="Retour aux dossiers clients">
             <i class="bi bi-chevron-left"></i>
         </button>
         <h2 class="text-center m-auto">Dossier client #{{ clientfile.id }}</h2>

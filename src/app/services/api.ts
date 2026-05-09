@@ -40,7 +40,7 @@ export class Api {
   }
 
   findOneCar(id: number): Observable<HttpResponse<any>> {
-    return this.Http.get<any>(`${this.apiUrl}/cars/${id}`, this.httpOptions);
+    return this.Http.get<any>(`${this.apiUrl}/cars/${id}/clientfiles`, this.httpOptions);
   }
 
   findOneClientfile(id: number): Observable<HttpResponse<any>> {

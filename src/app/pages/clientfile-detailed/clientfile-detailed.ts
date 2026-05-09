@@ -43,6 +43,16 @@ export class ClientfileDetailed implements OnInit, OnDestroy {
     this.clearSuccessMessageTimeout();
   }
 
+  getBackLink(): any[] {
+    const fromCarId = this.route.snapshot.queryParamMap.get('fromCarId');
+
+    if (fromCarId) {
+      return ['/stock', fromCarId];
+    }
+
+    return ['/dossiers'];
+  }
+
   getStatusLabel(status: string): string {
     return this.statusLabels[status] ?? status;
   }

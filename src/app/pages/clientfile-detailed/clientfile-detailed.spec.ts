@@ -10,6 +10,7 @@ describe('ClientfileDetailed', () => {
   let component: ClientfileDetailed;
   let fixture: ComponentFixture<ClientfileDetailed>;
   let apiMock: any;
+  let queryParamMap = convertToParamMap({});
 
   beforeEach(async () => {
     apiMock = {
@@ -29,9 +30,9 @@ describe('ClientfileDetailed', () => {
           },
           user: {
             id: 1,
-            surname: 'Doe',
-            name: 'Jane',
-            email: 'jane.doe@test.com',
+            surname: 'Marie',
+            name: 'Maria',
+            email: 'user@test.com',
             birthday: '1990-01-01',
           },
           identityCard: '',
@@ -57,9 +58,9 @@ describe('ClientfileDetailed', () => {
           },
           user: {
             id: 1,
-            surname: 'Doe',
-            name: 'Jane',
-            email: 'jane.doe@test.com',
+            surname: 'Marie',
+            name: 'Marie',
+            email: 'user@test.com',
             birthday: '1990-01-01',
           },
           identityCard: '',
@@ -71,6 +72,7 @@ describe('ClientfileDetailed', () => {
         },
       })),
     };
+    queryParamMap = convertToParamMap({});
 
     await TestBed.configureTestingModule({
       imports: [ClientfileDetailed],
@@ -81,6 +83,9 @@ describe('ClientfileDetailed', () => {
           useValue: {
             snapshot: {
               paramMap: convertToParamMap({ id: 1 }),
+              get queryParamMap() {
+                return queryParamMap;
+              },
             },
           },
         },
@@ -102,6 +107,16 @@ describe('ClientfileDetailed', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return client files as the default back link', () => {
+    expect(component.getBackLink()).toEqual(['/dossiers']);
+  });
+
+  it('should return the car detail back link when coming from a car', () => {
+    queryParamMap = convertToParamMap({ fromCarId: '1' });
+
+    expect(component.getBackLink()).toEqual(['/stock', '1']);
   });
 
   it('should show a success message when updating status', () => {

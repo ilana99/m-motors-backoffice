@@ -43,7 +43,15 @@ export class AuthService {
 
     private loadCurrentUser(suppressError: boolean): Observable<any | null> {
         return this.api.me().pipe(
-            map((response) => response.body ?? null),
+            map((response) => {
+                const user = response.body ?? null;
+
+                if (user?.role !== 'employee') {
+                    throw new Error('Unauthorized role');
+                }
+
+                return user;
+            }),
             tap((user) => {
                 this.userState.set(user);
             }),
