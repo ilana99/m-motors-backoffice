@@ -1,7 +1,8 @@
-import { Component, computed, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, ElementRef, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { Api } from '../../../../services/api';
 import { RouterLink } from "@angular/router";
 import { Modal } from '../modal/modal';
+import Tooltip from 'bootstrap/js/dist/tooltip';
 
 @Component({
   selector: 'app-gallery',
@@ -19,6 +20,7 @@ export class Gallery implements OnInit, OnDestroy {
   currentPage = 1;
   pageSize = 12;
   private deleteSuccessMessageTimeout: ReturnType<typeof setTimeout> | null = null;
+  private tooltips: Tooltip[] = [];
   statuses = ['Accepted', 'Rejected', 'Pending', 'Canceled'];
   filteredClientfiles = computed(() => {
     const selectedStatus = this.selectedStatus();
@@ -36,12 +38,16 @@ export class Gallery implements OnInit, OnDestroy {
     Canceled: 'Annulé',
   };
 
-  constructor(private apiService: Api) { }
+  constructor(
+    private apiService: Api,
+    private elementRef: ElementRef<HTMLElement>,
+  ) { }
 
   ngOnInit(): void {
     this.apiService.findAllClientfiles().subscribe({
       next: (response) => {
         this.clientfiles.set(Array.isArray(response.body) ? response.body : []);
+        setTimeout(() => this.initializeTooltips());
       },
       error: (error) => console.log(error),
     });
@@ -49,6 +55,7 @@ export class Gallery implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.clearDeleteSuccessMessageTimeout();
+    this.disposeTooltips();
   }
 
   getStatusLabel(status: string): string {
@@ -97,6 +104,7 @@ export class Gallery implements OnInit, OnDestroy {
     }
 
     this.currentPage = page;
+    setTimeout(() => this.initializeTooltips());
   }
 
   changeStatus(status: string): void {
@@ -131,6 +139,7 @@ export class Gallery implements OnInit, OnDestroy {
           this.currentPage = Math.max(this.getTotalPages(), 1);
         }
 
+        setTimeout(() => this.initializeTooltips());
         this.showTemporaryDeleteSuccessMessage();
         this.closeDeleteModal();
       },
@@ -152,6 +161,18 @@ export class Gallery implements OnInit, OnDestroy {
       clearTimeout(this.deleteSuccessMessageTimeout);
       this.deleteSuccessMessageTimeout = null;
     }
+  }
+
+  private initializeTooltips(): void {
+    this.disposeTooltips();
+
+    const tooltipElements = this.elementRef.nativeElement.querySelectorAll<HTMLElement>('[data-bs-toggle="tooltip"]');
+    this.tooltips = Array.from(tooltipElements).map((element) => new Tooltip(element));
+  }
+
+  private disposeTooltips(): void {
+    this.tooltips.forEach((tooltip) => tooltip.dispose());
+    this.tooltips = [];
   }
 
 }

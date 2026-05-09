@@ -3,3 +3,12 @@
     object-fit: cover;
     width: 100%;
 }
+.gallery-filter-control {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .gallery-filter-control {
+        width: 25%;
+    }
+}
