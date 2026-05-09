@@ -19,6 +19,15 @@ export class Gallery implements OnInit, OnDestroy {
   serviceChangeSuccessMessage = signal('');
   currentPage = 1;
   pageSize = 12;
+  selectedService = signal('');
+  selectedSearch = signal('');
+  selectedAvailability = signal('');
+  services = ['Leasing', 'Sale'];
+  availabilities = [
+    { value: 'true', label: 'Disponible' },
+    { value: 'Sale', label: 'Vendue' },
+    { value: 'Leasing', label: 'En location' },
+  ];
   private tooltips: Tooltip[] = [];
 
   constructor(
@@ -40,6 +49,44 @@ export class Gallery implements OnInit, OnDestroy {
     this.disposeTooltips();
   }
 
+
+  changeService(service: string) {
+    this.selectedService.set(service);
+    this.currentPage = 1;
+  }
+
+  changeSearch(search: string) {
+    this.selectedSearch.set(search);
+    this.currentPage = 1;
+  }
+
+  changeAvailability(availability: string) {
+    this.selectedAvailability.set(availability);
+    this.currentPage = 1;
+  }
+
+  getFilteredCars(): any[] {
+    const service = this.selectedService();
+    const search = this.selectedSearch().trim().toLowerCase();
+    const availability = this.selectedAvailability();
+
+    return this.cars().filter((car) => {
+      const matchesService = !service || car.service === service;
+      const matchesSearch = !search || `${car.id} ${car.brand} ${car.model}`.toLowerCase().includes(search);
+      let matchesAvailability = true;
+
+      if (availability === 'true') {
+        matchesAvailability = car.isAvailable === true;
+      }
+
+      if (availability === 'Sale' || availability === 'Leasing') {
+        matchesAvailability = car.isAvailable === false && car.service === availability;
+      }
+
+      return matchesService && matchesSearch && matchesAvailability;
+    });
+  }
+
   getServiceLabel(service: string): string {
     if (service === 'Leasing') {
       return 'Location';
@@ -52,14 +99,26 @@ export class Gallery implements OnInit, OnDestroy {
     return service;
   }
 
+  getAvailabilityLabel(car: any): string {
+    if (car.isAvailable === true) {
+      return 'Disponible';
+    }
+
+    if (car.service === 'Leasing') {
+      return 'En location';
+    }
+
+    return 'Vendue';
+  }
+
   getPagedCars(): any[] {
     const start = (this.currentPage - 1) * this.pageSize;
 
-    return this.cars().slice(start, start + this.pageSize);
+    return this.getFilteredCars().slice(start, start + this.pageSize);
   }
 
   getTotalPages(): number {
-    return Math.ceil(this.cars().length / this.pageSize);
+    return Math.ceil(this.getFilteredCars().length / this.pageSize);
   }
 
   getPages(): number[] {
