@@ -100,7 +100,7 @@ describe('Cars', () => {
     expect(apiMock.createCar).toHaveBeenCalledWith(submission.formData);
     expect(component.successMessage()).toBe('Voiture ajoutée avec succès.');
     expect(component.showCarForm()).toBe(false);
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/stock']);
 
     vi.advanceTimersByTime(2500);
     expect(component.successMessage()).toBe('');
@@ -128,7 +128,7 @@ describe('Cars', () => {
     expect(apiMock.updateCar).toHaveBeenCalledWith(12, submission.formData);
     expect(apiMock.deleteCarImage).not.toHaveBeenCalled();
     expect(component.showCarForm()).toBe(false);
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/stock']);
   });
 
   it('should delete queued images only after a car update succeeds', () => {
@@ -143,7 +143,7 @@ describe('Cars', () => {
     expect(apiMock.updateCar).toHaveBeenCalledWith(12, submission.formData);
     expect(apiMock.deleteCarImage).toHaveBeenCalledWith(12, { url: `${storageUrl}/genesis-gv80-front.jpg` });
     expect(apiMock.deleteCarImage).toHaveBeenCalledWith(12, { url: `${storageUrl}/genesis-gv80-side.jpg` });
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/cars']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/stock']);
   });
 
   it('should not delete queued images when the car update fails', () => {

@@ -1,0 +1,77 @@
+<div class="container-sm mt-4">
+    <button type="button" class="btn btn-lg align-self-start mb-4" (click)="this.router.navigate(['/stock'])">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    <div class="card mb-3 border-white">
+        <div class="row g-0">
+            <div class="col-md-4">
+                @if (car()?.images?.length) {
+                <div class="ratio ratio-4x3">
+                    <img [src]="car().images[0]" class="w-100 h-100 object-fit-cover rounded"
+                        [alt]="car().brand + ' ' + car().model">
+                </div>
+                } @else {
+                <div class="ratio ratio-4x3">
+                    <img src="car.jpg" class="w-100 h-100 object-fit-cover rounded" alt="car placeholder">
+                </div>
+                }
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">{{getServiceLabel(car().service)}}</h5>
+                    <h2 class="card-title mb-2">{{car().brand}}</h2>
+                    <h3 class="card-title mb-4">{{car().model}}</h3>
+                    @if (car().service === 'Leasing') {
+                    <h4 class="card-text">À partir de <b>{{ car().price }}</b> € / mois</h4>
+                    } @else {
+                    <p class="card-text fw-bold">{{ car().price }} €</p>
+                    }
+                    <p>{{ getAvailabilityLabel(car()) }}</p>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus accumsan ornare tellus at
+                        porttitor. Aenean massa quam, interdum id ligula nec, aliquet bibendum neque. Aliquam erat
+                        volutpat. Pellentesque nibh erat, efficitur at massa ac, sodales accumsan dui. Sed vel augue et
+                        felis egestas vulputate. Sed blandit tempus elementum. Nulla vulputate nunc in nisi
+                        sollicitudin, sodales molestie justo posuere.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (car().images?.length) { <div class="row g-2 mt-2">
+        <hr class="my-5">
+        <h2 class="text-center">Gallerie</h2>
+        @for (image of car().images; track image) {
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="ratio ratio-4x3">
+                <img [src]="image" class="w-100 h-100 rounded object-fit-cover" [alt]="car().brand + ' ' + car().model">
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    <hr class="my-5">
+    <h2 class="text-center mt-4">Dossiers</h2>
+    @if (car().clientFiles?.length) {
+    <div class="row g-3">
+        @for (clientFile of car().clientFiles; track clientFile.id) {
+        <div class="col-12 col-md-6 col-lg-4">
+            <a class="card {{ getStatusClass(clientFile.status) }} text-decoration-none h-100"
+                [routerLink]="['/dossiers', clientFile.id]" [queryParams]="{ fromCarId: car().id }">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">Dossier client</h5>
+                        <p><i>ID: {{ clientFile.id }}</i></p>
+                    </div>
+                    <p class="fw-bold mb-2">{{ getStatusLabel(clientFile.status) }}</p>
+                    <p class="mb-0">{{ clientFile.surname }} {{ clientFile.name }} <i>ID: {{ clientFile.userId }}</i>
+                    </p>
+                </div>
+            </a>
+        </div>
+        }
+    </div>
+    } @else {
+    <p class="text-body-secondary text-center">Aucun dossier client trouvé.</p>
+    }
+</div>

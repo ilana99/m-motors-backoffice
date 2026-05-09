@@ -6,6 +6,7 @@ import { Profile } from './pages/profile/profile';
 import { Clientfiles } from './pages/clientfiles/clientfiles';
 import { ClientfileDetailed } from './pages/clientfile-detailed/clientfile-detailed';
 import { Dashboard } from './pages/dashboard/dashboard';
+import { CarDetailed } from './pages/car-detailed/car-detailed';
 
 export const routes: Routes = [
     {
@@ -29,18 +30,23 @@ export const routes: Routes = [
         canActivate: [authGuard],
     },
     {
-        path: 'clientfiles',
+        path: 'dossiers',
         component: Clientfiles,
         canActivate: [authGuard],
     },
     {
-        path: 'clientfiles/:id',
+        path: 'dossiers/:id',
         component: ClientfileDetailed,
         canActivate: [authGuard],
     },
     {
-        path: 'cars',
+        path: 'stock',
         component: Cars,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'stock/:id',
+        component: CarDetailed,
         canActivate: [authGuard],
     },
     {

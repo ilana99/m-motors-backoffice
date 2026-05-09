@@ -21,7 +21,7 @@
 
 <div class="container-fluid m-auto d-flex flex-wrap gap-3 my-4 justify-content-center">
     @for (car of getPagedCars(); track car.id || $index) {
-    <div class="card bg-light" style="width: 18rem;">
+    <div class="card bg-light gallery-car-card" style="width: 18rem;" (click)="navigateToDetailedCarPage(car.id)">
         @if (car.images?.length) {
         <img [src]="car.images[0]" class="card-img-top gallery-car-image" [alt]="car.brand + ' ' + car.model">
         } @else {

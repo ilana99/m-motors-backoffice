@@ -9,7 +9,13 @@ export const authGuard: CanActivateFn = (route) => {
   const isLoginPage = route.routeConfig?.path === 'login';
 
   return apiService.me().pipe(
-    map(() => isLoginPage ? router.createUrlTree(['/dashboard']) : true),
+    map((response) => {
+      if (response.body?.role !== 'employee') {
+        return isLoginPage ? true : router.createUrlTree(['/login']);
+      }
+
+      return isLoginPage ? router.createUrlTree(['/dashboard']) : true;
+    }),
     catchError(() => of(isLoginPage ? true : router.createUrlTree(['/login']))),
   );
 };
