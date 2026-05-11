@@ -1,59 +1,51 @@
-# MMotorsBackoffice
+## Description
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Site employé pour M-motors.
 
-## Development server
+## Outils et technologies
 
-To start a local development server, run:
+- NestJS et Angular 21
+- PostgreSQL
+- Supabase (Database et Storage)
+- Bootstrap
+- Sentry
+- VSCode
+- Postman
+- Render
 
+## Branches
+
+- main: code déployé sur la production
+- dev: code déployé sur le staging (pour l’US en cours de développement)
+
+Convention de commit
+- Ajout d’une feature: “added …” 
+- Réglage de bug: “fix:...” 
+
+## Commandes
+
+Pour lancer le site et utiliser le serveur déployé sur dev
 ```bash
-ng serve
+  npm run start-dev
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+Pour lancer le site et utiliser le serveur local
 ```bash
-ng generate component component-name
+  npm run start
 ```
+Utilisation d'environnements Angular: local, dev, et prod pour le changement dynamique de l'URL de l'API back-end. 
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Développement d'une US (CI/CD)
 
-```bash
-ng generate --help
-```
+- Lecture de l'US, compréhension du besoin et évaluation des dépendances (besoin de code sur le backend, ou juste sur le front client par exemple)
+- Une fois sur le repo, on pull main sur dev pour être sûr d'être à jour et on développe l'US sur dev
+- Vérification de l'implémentation en local pendant le développement. Si l'implémentation en local marche: mise à jour de la documentation, écriture/mise à jour des tests puis déploiement du code sur dev. Sinon, on modifie le code et on re regarde en local.
+- Une fois déployé sur dev, vérification sur le site de staging. Si tout marche et correspond au besoin, on fait une demande de pull request de dev à main et on merge sur main (avec des rebases si besoin). Sinon on retourne modifier le code et on repousse sur dev avec les nouvelles modifications.
+- Vérification du code déployé sur la production, si cela correspond aux critères d’acceptation, l'US est considérée 'terminée'. 
 
-## Building
+Dans le cas du test en local, Postman est utilisé pour tester les requêtes vers le serveur. On utilise 3 environments Postman différents avec des URL dynamiques, pour tester en local, dev, et production. Exemple: \<\<url\>\>/auth/login.
 
-To build the project run:
+## Déploiement
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Render
+- Chaque projet (back, deux front) et chaque branche a un déploiement (ex: back-end production et back-end staging, qui correspond à dev) qui se rebuild automatiquement avec chaque commit.
