@@ -101,10 +101,10 @@ export class Api {
   }
 
   me(): Observable<HttpResponse<any>> {
-    return this.Http.get<any>(`${this.apiUrl}/auth/me`, this.httpOptions);
+    return this.Http.get<any>(`${this.apiUrl}/auth/meEmployee`, this.httpOptions);
   }
 
   logout(): Observable<HttpResponse<any>> {
-    return this.Http.post<any>(`${this.apiUrl}/auth/logout`, {}, this.httpOptions);
+    return this.Http.post<any>(`${this.apiUrl}/auth/logout`, { role: 'employee' }, this.httpOptions);
   }
 }
