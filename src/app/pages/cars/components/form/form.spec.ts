@@ -51,6 +51,23 @@ describe('Form', () => {
     });
   });
 
+  it('should disable the service field when editing an unavailable car', () => {
+    setCarInput({
+      id: 12,
+      brand: 'Genesis',
+      model: 'GV80',
+      price: 42000,
+      service: 'Sale',
+      isAvailable: false,
+      images: [],
+    });
+
+    const serviceSelect = fixture.nativeElement.querySelector('#carService') as HTMLSelectElement;
+
+    expect(component.carsForm.controls.service.disabled).toBe(true);
+    expect(serviceSelect.disabled).toBe(true);
+  });
+
   it('should limit selected files to the remaining slots under 10 total images', () => {
     setCarInput({
       id: 12,

@@ -72,7 +72,7 @@ export class ClientfileDetailed implements OnInit, OnDestroy {
   updateStatus(status: string): void {
     const clientfile = this.clientfile();
 
-    if (!clientfile?.id || !this.api) {
+    if (!clientfile?.id || !this.api || clientfile.car?.isAvailable !== true) {
       return;
     }
 

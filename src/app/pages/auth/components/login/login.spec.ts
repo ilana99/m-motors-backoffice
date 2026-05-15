@@ -43,7 +43,7 @@ describe('Login', () => {
   describe('Form Submission', () => {
     beforeEach(() => {
       component.loginForm.patchValue({
-        email: 'user@test.com',
+        email: 'user@gmail.com',
         password: 'password123',
       });
     });
@@ -53,7 +53,7 @@ describe('Login', () => {
       component.login();
 
       expect(loginSpy).toHaveBeenCalledWith({
-        email: 'user@test.com',
+        email: 'user@gmail.com',
         password: 'password123',
       });
       expect(component.loginResponse()).toBe('');

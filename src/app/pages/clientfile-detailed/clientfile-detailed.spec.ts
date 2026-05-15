@@ -32,7 +32,7 @@ describe('ClientfileDetailed', () => {
             id: 1,
             surname: 'Marie',
             name: 'Maria',
-            email: 'user@test.com',
+            email: 'user@gmail.com',
             birthday: '1990-01-01',
           },
           identityCard: '',
@@ -59,8 +59,8 @@ describe('ClientfileDetailed', () => {
           user: {
             id: 1,
             surname: 'Marie',
-            name: 'Marie',
-            email: 'user@test.com',
+            name: 'Maria',
+            email: 'user@gmail.com',
             birthday: '1990-01-01',
           },
           identityCard: '',
@@ -136,5 +136,19 @@ describe('ClientfileDetailed', () => {
 
     vi.advanceTimersByTime(2500);
     expect(component.successMessage()).toBe('');
+  });
+
+  it('should not update status when the car is unavailable', () => {
+    component.clientfile.update((clientfile) => ({
+      ...clientfile,
+      car: {
+        ...clientfile.car,
+        isAvailable: false,
+      },
+    }));
+
+    component.updateStatus('Accepted');
+
+    expect(apiMock.updateClientfileStatus).not.toHaveBeenCalled();
   });
 });
