@@ -11,8 +11,10 @@
 </div>
 }
 
+@if (getPendingClientfiles().length) {
+<h3 class="mt-4 text-center">Dossiers en cours</h3>
 <div class="container-fluid m-auto d-flex flex-wrap gap-3 my-4 justify-content-center">
-    @for (clientfile of getPagedClientfiles(); track clientfile.id || $index) {
+    @for (clientfile of getPendingClientfiles(); track clientfile.id || $index) {
     <div class="card {{ getStatusClass(clientfile.status) }} clientfile-card" style="width: 18rem;"
         [routerLink]="['/dossiers', clientfile.id]">
         <div class="card-body d-flex flex-column justify-content-between">
@@ -31,29 +33,34 @@
             </button>
         </div>
     </div>
-    } @empty {
-    <p class="text-body-secondary">Aucun dossier client trouvé.</p>
     }
 </div>
+}
 
-@if (getTotalPages() > 1) {
-<nav aria-label="Pagination des dossiers clients">
-    <ul class="pagination justify-content-center">
-        <li class="page-item" [class.disabled]="currentPage === 1">
-            <button class="page-link" type="button" (click)="goToPage(currentPage - 1)">Précédent</button>
-        </li>
-
-        @for (page of getPages(); track page) {
-        <li class="page-item" [class.active]="page === currentPage">
-            <button class="page-link" type="button" (click)="goToPage(page)">{{ page }}</button>
-        </li>
-        }
-
-        <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
-            <button class="page-link" type="button" (click)="goToPage(currentPage + 1)">Suivant</button>
-        </li>
-    </ul>
-</nav>
+@if (getPastClientfiles().length) {
+<h3 class="mt-4 text-center">Dossiers passés</h3>
+<div class="container-fluid m-auto d-flex flex-wrap gap-3 my-4 justify-content-center">
+    @for (clientfile of getPastClientfiles(); track clientfile.id || $index) {
+    <div class="card {{ getStatusClass(clientfile.status) }} clientfile-card" style="width: 18rem;"
+        [routerLink]="['/dossiers', clientfile.id]">
+        <div class="card-body d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title">Dossier client</h5>
+                <p><i>ID: {{ clientfile.id }}</i></p>
+            </div>
+            <div>
+                <div class="fw-bold mb-2">{{ getStatusLabel(clientfile.status) }}</div>
+                <div>{{ clientfile.car.brand }} {{ clientfile.car.model }} <i>ID: {{ clientfile.car.id }}</i></div>
+                <div>{{ clientfile.user.surname }} {{ clientfile.user.name }} <i>ID: {{ clientfile.user.id }}</i></div>
+            </div>
+            <button type="button" class="btn btn-sm btn-light align-self-start mt-3"
+                aria-label="Supprimer ce dossier client" (click)="openDeleteModal($event, clientfile)">
+                <i class="bi bi-trash3 text-dark"></i>
+            </button>
+        </div>
+    </div>
+    }
+</div>
 }
 
 @if (clientfileToDelete()) {
