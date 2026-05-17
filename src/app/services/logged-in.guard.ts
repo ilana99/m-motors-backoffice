@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
-import { Api } from '../services/api';
+import { Api } from './api';
 
-export const authGuard: CanActivateFn = (route) => {
+export const loggedInGuard: CanActivateFn = (route) => {
   const apiService = inject(Api);
   const router = inject(Router);
   const isLoginPage = route.routeConfig?.path === 'login';

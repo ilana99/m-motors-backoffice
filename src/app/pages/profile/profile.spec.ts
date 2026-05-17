@@ -10,10 +10,10 @@ describe('Profile', () => {
   let getProfileSpy: any;
 
   const user = {
-    surname: 'Doe',
+    surname: 'Marie',
     name: 'Maria',
     birthday: '1998-01-01',
-    email: 'user@test.com',
+    email: 'user@gmail.com',
   };
 
   beforeEach(async () => {
@@ -53,10 +53,10 @@ describe('Profile', () => {
 
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('Doe');
+    expect(fixture.nativeElement.textContent).toContain('Marie');
     expect(fixture.nativeElement.textContent).toContain('Maria');
     expect(fixture.nativeElement.textContent).toContain('1998-01-01');
-    expect(fixture.nativeElement.textContent).toContain('user@test.com');
+    expect(fixture.nativeElement.textContent).toContain('user@gmail.com');
   });
 
   it('should log error when loading profile fails', () => {

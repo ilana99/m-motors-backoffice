@@ -52,6 +52,7 @@ export class Form implements OnChanges, OnDestroy {
   private loadCarForEditing(car: any | null): void {
     if (!car) {
       this.carsForm.reset();
+      this.carsForm.controls.service.enable();
       this.carId.set(null);
       this.existingImages.set([]);
       this.deletedImageUrls.set([]);
@@ -67,6 +68,12 @@ export class Form implements OnChanges, OnDestroy {
       price: car.price ?? '',
       service: car.service ?? '',
     });
+
+    if (car.isAvailable === false) {
+      this.carsForm.controls.service.disable();
+    } else {
+      this.carsForm.controls.service.enable();
+    }
   }
 
   shouldShowError(controlName: 'brand' | 'model' | 'price' | 'service'): boolean {

@@ -11,8 +11,8 @@ describe('Gallery', () => {
   let fixture: ComponentFixture<Gallery>;
   let apiMock: any;
   const clientfiles = [
-    { id: 1, status: 'Accepted', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 1, surname: 'Doe', name: 'Jane' } },
-    { id: 2, status: 'Pending', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 2, surname: 'Doe', name: 'John' } },
+    { id: 1, status: 'Accepted', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 1, surname: 'Marie', name: 'Maria' } },
+    { id: 2, status: 'Pending', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 2, surname: 'Marie', name: 'Maria' } },
   ];
 
   beforeEach(async () => {

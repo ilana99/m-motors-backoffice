@@ -2,11 +2,11 @@ import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, signal 
 import Tooltip from 'bootstrap/js/dist/tooltip';
 import { Api } from '../../../../services/api';
 import { Modal } from '../modal/modal';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-gallery',
-  imports: [Modal],
+  imports: [RouterLink, Modal],
   templateUrl: './gallery.html',
   styleUrl: './gallery.scss',
 })
@@ -34,7 +34,6 @@ export class Gallery implements OnInit, OnDestroy {
   constructor(
     private apiService: Api,
     private elementRef: ElementRef<HTMLElement>,
-    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -49,10 +48,6 @@ export class Gallery implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.disposeTooltips();
-  }
-
-  navigateToDetailedCarPage(carId: number) {
-    this.router.navigate(['/stock', carId])
   }
 
   changeService(service: string) {
@@ -145,7 +140,15 @@ export class Gallery implements OnInit, OnDestroy {
     setTimeout(() => this.initializeTooltips());
   }
 
-  openDeleteModal(car: any): void {
+  emitEditCar(event: Event, car: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.editCar.emit(car);
+  }
+
+  openDeleteModal(event: Event, car: any): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.deleteSuccessMessage.set('');
     this.carToDelete.set(car);
   }
@@ -155,7 +158,9 @@ export class Gallery implements OnInit, OnDestroy {
     this.carToDelete.set(null);
   }
 
-  openServiceModal(car: any): void {
+  openServiceModal(event: Event, car: any): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.serviceChangeSuccessMessage.set('');
     this.carToChangeService.set(car);
   }

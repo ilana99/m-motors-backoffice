@@ -46,8 +46,6 @@ export class AuthService {
             map((response) => {
                 const user = response.body ?? null;
 
-                console.log(user);
-
                 if (user?.role !== 'employee') {
                     throw new Error('Unauthorized role');
                 }

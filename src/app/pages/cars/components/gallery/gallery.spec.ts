@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { Api } from '../../../../services/api';
@@ -41,6 +42,7 @@ describe('Gallery', () => {
       imports: [Gallery],
       providers: [
         { provide: Api, useValue: apiMock },
+        provideRouter([]),
       ],
     }).compileComponents();
 
@@ -90,9 +92,15 @@ describe('Gallery', () => {
 
   it('should open and close the delete modal state', () => {
     const car = cars[0];
+    const event = {
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    } as unknown as Event;
     component.deleteSuccessMessage.set('Old message');
 
-    component.openDeleteModal(car);
+    component.openDeleteModal(event, car);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(event.stopPropagation).toHaveBeenCalled();
     expect(component.carToDelete()).toBe(car);
     expect(component.deleteSuccessMessage()).toBe('');
 
@@ -102,14 +110,35 @@ describe('Gallery', () => {
 
   it('should open and close the service modal state', () => {
     const car = cars[0];
+    const event = {
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    } as unknown as Event;
     component.serviceChangeSuccessMessage.set('Old message');
 
-    component.openServiceModal(car);
+    component.openServiceModal(event, car);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(event.stopPropagation).toHaveBeenCalled();
     expect(component.carToChangeService()).toBe(car);
     expect(component.serviceChangeSuccessMessage()).toBe('');
 
     component.closeServiceModal();
     expect(component.carToChangeService()).toBeNull();
+  });
+
+  it('should emit a car edit without opening the detailed page', () => {
+    const car = cars[0];
+    const event = {
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    } as unknown as Event;
+    const emitSpy = vi.spyOn(component.editCar, 'emit');
+
+    component.emitEditCar(event, car);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(event.stopPropagation).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(car);
   });
 
   it('should change a leasing car to sale', () => {
@@ -133,6 +162,15 @@ describe('Gallery', () => {
 
     expect(apiMock.updateCarService).toHaveBeenCalledWith(2, 'Leasing');
     expect(component.cars()[1].service).toBe('Leasing');
+  });
+
+  it('should only show the service change button for available cars', () => {
+    component.cars.set(cars);
+    fixture.detectChanges();
+
+    const serviceButtons = fixture.nativeElement.querySelectorAll('[aria-label="Modifier le service"]');
+
+    expect(serviceButtons.length).toBe(1);
   });
 
   it('should not change service without a selected car id', () => {

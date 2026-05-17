@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
+import { loggedInGuard } from './services/logged-in.guard';
 import { Auth } from './pages/auth/auth';
 import { Cars } from './pages/cars/cars';
 import { Profile } from './pages/profile/profile';
@@ -17,37 +17,37 @@ export const routes: Routes = [
     {
         path: 'login',
         component: Auth,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: 'dashboard',
         component: Dashboard,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: 'profil',
         component: Profile,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: 'dossiers',
         component: Clientfiles,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: 'dossiers/:id',
         component: ClientfileDetailed,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: 'stock',
         component: Cars,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: 'stock/:id',
         component: CarDetailed,
-        canActivate: [authGuard],
+        canActivate: [loggedInGuard],
     },
     {
         path: '**',

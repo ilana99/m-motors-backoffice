@@ -21,7 +21,7 @@
 
 <div class="container-fluid m-auto d-flex flex-wrap gap-3 my-4 justify-content-center">
     @for (car of getPagedCars(); track car.id || $index) {
-    <div class="card bg-light gallery-car-card" style="width: 18rem;" (click)="navigateToDetailedCarPage(car.id)">
+    <div class="card bg-light gallery-car-card" style="width: 18rem;" [routerLink]="['/stock', car.id]">
         @if (car.images?.length) {
         <img [src]="car.images[0]" class="card-img-top gallery-car-image" [alt]="car.brand + ' ' + car.model">
         } @else {
@@ -44,17 +44,19 @@
             <div class="d-flex gap-1">
                 <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
                     data-bs-title="Modifier cette voiture" aria-label="Modifier cette voiture"
-                    (click)="editCar.emit(car)">
+                    (click)="emitEditCar($event, car)">
                     <i class="bi bi-pencil"></i>
                 </button>
+                @if (car.isAvailable) {
                 <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
                     data-bs-title="Modifier le service" aria-label="Modifier le service"
-                    (click)="openServiceModal(car)">
+                    (click)="openServiceModal($event, car)">
                     <i class="bi bi-arrow-left-right"></i>
                 </button>
+                }
                 <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
                     data-bs-title="Supprimer cette voiture" aria-label="Supprimer cette voiture"
-                    (click)="openDeleteModal(car)">
+                    (click)="openDeleteModal($event, car)">
                     <i class="bi bi-trash3"></i>
                 </button>
             </div>
