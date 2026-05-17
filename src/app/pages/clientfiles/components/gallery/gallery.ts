@@ -17,8 +17,6 @@ export class Gallery implements OnInit, OnDestroy {
   clientfileToDelete = signal<any | null>(null);
   selectedStatus = signal('');
   deleteSuccessMessage = signal('');
-  currentPage = 1;
-  pageSize = 12;
   private deleteSuccessMessageTimeout: ReturnType<typeof setTimeout> | null = null;
   private tooltips: Tooltip[] = [];
   statuses = ['Accepted', 'Rejected', 'Pending', 'Canceled'];
@@ -78,38 +76,16 @@ export class Gallery implements OnInit, OnDestroy {
     return 'bg-light';
   }
 
-  getPagedClientfiles(): any[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-
-    return this.filteredClientfiles().slice(start, start + this.pageSize);
+  getPendingClientfiles(): any[] {
+    return this.filteredClientfiles().filter((clientfile) => clientfile.status === 'Pending');
   }
 
-  getTotalPages(): number {
-    return Math.ceil(this.filteredClientfiles().length / this.pageSize);
-  }
-
-  getPages(): number[] {
-    const pages: number[] = [];
-
-    for (let page = 1; page <= this.getTotalPages(); page++) {
-      pages.push(page);
-    }
-
-    return pages;
-  }
-
-  goToPage(page: number): void {
-    if (page < 1 || page > this.getTotalPages()) {
-      return;
-    }
-
-    this.currentPage = page;
-    setTimeout(() => this.initializeTooltips());
+  getPastClientfiles(): any[] {
+    return this.filteredClientfiles().filter((clientfile) => clientfile.status !== 'Pending');
   }
 
   changeStatus(status: string): void {
     this.selectedStatus.set(status);
-    this.currentPage = 1;
   }
 
   openDeleteModal(event: Event, clientfile: any): void {
@@ -134,10 +110,6 @@ export class Gallery implements OnInit, OnDestroy {
         this.clientfiles.update((clientfiles) => clientfiles.filter((currentClientfile) => {
           return currentClientfile.id !== clientfile.id;
         }));
-
-        if (this.currentPage > this.getTotalPages()) {
-          this.currentPage = Math.max(this.getTotalPages(), 1);
-        }
 
         setTimeout(() => this.initializeTooltips());
         this.showTemporaryDeleteSuccessMessage();

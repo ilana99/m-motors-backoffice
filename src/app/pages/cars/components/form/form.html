@@ -61,6 +61,9 @@
                 <option value="Sale">Vente</option>
             </select>
             <label for="carService">Service *</label>
+            @if (car.isAvailable === false) {
+            <p>Le type de service ne peut pas être changé pour une voiture déjà en location/vendue.</p>
+            }
             @if (shouldShowError('service')) {
             <div class="invalid-feedback">Le service est obligatoire.</div>
             }

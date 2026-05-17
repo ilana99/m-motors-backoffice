@@ -13,6 +13,7 @@ describe('Gallery', () => {
   const clientfiles = [
     { id: 1, status: 'Accepted', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 1, surname: 'Marie', name: 'Maria' } },
     { id: 2, status: 'Pending', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 2, surname: 'Marie', name: 'Maria' } },
+    { id: 3, status: 'Canceled', car: { brand: 'Genesis', model: 'GV80' }, user: { id: 3, surname: 'Marie', name: 'Maria' } },
   ];
 
   beforeEach(async () => {
@@ -87,6 +88,22 @@ describe('Gallery', () => {
     expect(component.filteredClientfiles()).toEqual([clientfiles[0]]);
   });
 
+  it('should split pending and past client files', () => {
+    component.clientfiles.set(clientfiles);
+
+    expect(component.getPendingClientfiles()).toEqual([clientfiles[1]]);
+    expect(component.getPastClientfiles()).toEqual([clientfiles[0], clientfiles[2]]);
+  });
+
+  it('should not show the past client files section when filtering pending client files', () => {
+    component.clientfiles.set(clientfiles);
+    component.selectedStatus.set('Pending');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Dossiers en cours');
+    expect(fixture.nativeElement.textContent).not.toContain('Dossiers passés');
+  });
+
   it('should open and close the delete modal state', () => {
     const event = {
       preventDefault: vi.fn(),
@@ -112,7 +129,7 @@ describe('Gallery', () => {
     component.deleteSelectedClientfile();
 
     expect(apiMock.deleteClientfile).toHaveBeenCalledWith(1);
-    expect(component.clientfiles()).toEqual([clientfiles[1]]);
+    expect(component.clientfiles()).toEqual([clientfiles[1], clientfiles[2]]);
     expect(component.clientfileToDelete()).toBeNull();
     expect(component.deleteSuccessMessage()).toBe('Dossier client supprimé avec succès.');
 
