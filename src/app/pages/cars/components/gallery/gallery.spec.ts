@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { Api } from '../../../../services/api';
+import { Modal } from '../modal/modal';
 import { Gallery } from './gallery';
 
 describe('Gallery', () => {
@@ -224,7 +226,18 @@ describe('Gallery', () => {
   });
 
   it('should filter cars by brand or model search', () => {
-    component.cars.set(cars);
+    component.cars.set([
+      ...cars,
+      {
+        id: 3,
+        brand: 'Genesis',
+        model: 'GV70',
+        price: 45000,
+        service: 'Sale',
+        isAvailable: true,
+        images: [],
+      },
+    ]);
 
     component.changeSearch('gv80');
 
@@ -282,5 +295,186 @@ describe('Gallery', () => {
     component.changeAvailability('true');
 
     expect(component.currentPage).toBe(1);
+  });
+
+  it('should display cars', () => {
+    component.cars.set(cars);
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Toutes les voitures');
+    expect(fixture.nativeElement.textContent).toContain('Toutes les disponibilités');
+    expect(fixture.nativeElement.textContent).toContain('Location');
+    expect(fixture.nativeElement.textContent).toContain('Vente');
+    expect(fixture.nativeElement.textContent).toContain('Genesis');
+    expect(fixture.nativeElement.textContent).toContain('GV80');
+    expect(fixture.nativeElement.textContent).toContain('42000');
+    expect(fixture.nativeElement.textContent).toContain('39000');
+  });
+
+  it('should display car images', () => {
+    component.cars.set(cars);
+
+    fixture.detectChanges();
+
+    const images = fixture.nativeElement.querySelectorAll('.gallery-car-image');
+
+    expect(images[0].getAttribute('src')).toBe(`${storageUrl}/genesis-gv80-front.jpg`);
+    expect(images[0].getAttribute('alt')).toBe('Genesis GV80');
+    expect(images[1].getAttribute('src')).toBe(`${storageUrl}/genesis-gv80-side.jpg`);
+    expect(images[1].getAttribute('alt')).toBe('Genesis GV80');
+  });
+
+  it('should display a placeholder image when a car has no image', () => {
+    component.cars.set([
+      {
+        ...cars[0],
+        images: [],
+      },
+    ]);
+
+    fixture.detectChanges();
+
+    const image = fixture.nativeElement.querySelector('.gallery-car-image');
+
+    expect(image.getAttribute('src')).toBe('/car.jpg');
+    expect(image.getAttribute('alt')).toBe('car placeholder');
+  });
+
+  it('should display an empty message when there are no cars', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Aucune voiture trouvée.');
+    expect(fixture.nativeElement.querySelector('.gallery-filter-control')).toBeNull();
+  });
+
+  it('should update displayed cars when selecting a service', () => {
+    component.cars.set(cars);
+    fixture.detectChanges();
+
+    const select = fixture.nativeElement.querySelector('select');
+    select.value = 'Sale';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    const cards = fixture.nativeElement.querySelectorAll('.gallery-car-card');
+
+    expect(cards.length).toBe(1);
+    expect(cards[0].textContent).toContain('Vente');
+    expect(cards[0].textContent).toContain('39000');
+    expect(cards[0].textContent).not.toContain('Location');
+    expect(cards[0].textContent).not.toContain('42000');
+  });
+
+  it('should update displayed cars when selecting an availability', () => {
+    component.cars.set(cars);
+    fixture.detectChanges();
+
+    const selects = fixture.nativeElement.querySelectorAll('select');
+    selects[1].value = 'true';
+    selects[1].dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    const cards = fixture.nativeElement.querySelectorAll('.gallery-car-card');
+
+    expect(cards.length).toBe(1);
+    expect(cards[0].textContent).toContain('Disponible');
+    expect(cards[0].textContent).not.toContain('Vendue');
+  });
+
+  it('should emit edit from the edit button', () => {
+    const emitSpy = vi.spyOn(component.editCar, 'emit');
+    component.cars.set(cars);
+    fixture.detectChanges();
+
+    const editButton = fixture.nativeElement.querySelector('[aria-label="Modifier cette voiture"]') as HTMLButtonElement;
+    editButton.click();
+
+    expect(emitSpy).toHaveBeenCalledWith(cars[0]);
+  });
+
+  it('should open and close the delete modal from the template', () => {
+    component.cars.set(cars);
+    fixture.detectChanges();
+
+    const deleteButton = fixture.nativeElement.querySelector('[aria-label="Supprimer cette voiture"]') as HTMLButtonElement;
+    deleteButton.click();
+    fixture.detectChanges();
+
+    expect(component.carToDelete()).toBe(cars[0]);
+    expect(fixture.nativeElement.querySelector('app-modal')).not.toBeNull();
+
+    const modal = fixture.debugElement.query(By.directive(Modal)).componentInstance as Modal;
+    modal.closeModal.emit();
+    fixture.detectChanges();
+
+    expect(component.carToDelete()).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-modal')).toBeNull();
+  });
+
+  it('should delete from the delete modal output', () => {
+    apiMock.deleteCar.mockReturnValue(of({ status: 200 }));
+    component.cars.set(cars);
+    component.carToDelete.set(cars[0]);
+    fixture.detectChanges();
+
+    const modal = fixture.debugElement.query(By.directive(Modal)).componentInstance as Modal;
+    modal.confirmDelete.emit();
+    fixture.detectChanges();
+
+    expect(apiMock.deleteCar).toHaveBeenCalledWith(1);
+    expect(component.cars()).toEqual([cars[1]]);
+    expect(fixture.nativeElement.textContent).toContain('Voiture supprimée avec succès.');
+  });
+
+  it('should open and close the service modal from the template', () => {
+    component.cars.set(cars);
+    fixture.detectChanges();
+
+    const serviceButton = fixture.nativeElement.querySelector('[aria-label="Modifier le service"]') as HTMLButtonElement;
+    serviceButton.click();
+    fixture.detectChanges();
+
+    expect(component.carToChangeService()).toBe(cars[0]);
+    expect(fixture.nativeElement.querySelector('app-modal')).not.toBeNull();
+
+    const modal = fixture.debugElement.query(By.directive(Modal)).componentInstance as Modal;
+    modal.closeModal.emit();
+    fixture.detectChanges();
+
+    expect(component.carToChangeService()).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-modal')).toBeNull();
+  });
+
+  it('should change service from the service modal output', () => {
+    apiMock.updateCarService.mockReturnValue(of({ status: 200 }));
+    component.cars.set(cars);
+    component.carToChangeService.set(cars[0]);
+    fixture.detectChanges();
+
+    const modal = fixture.debugElement.query(By.directive(Modal)).componentInstance as Modal;
+    modal.confirmServiceChange.emit();
+    fixture.detectChanges();
+
+    expect(apiMock.updateCarService).toHaveBeenCalledWith(1, 'Sale');
+    expect(component.cars()[0].service).toBe('Sale');
+    expect(fixture.nativeElement.textContent).toContain('Type de service modifié avec succès.');
+  });
+
+  it('should display pagination', () => {
+    component.cars.set(
+      Array.from({ length: 13 }, (_, index) => ({
+        ...cars[0],
+        id: index + 1,
+      })),
+    );
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Précédent');
+    expect(fixture.nativeElement.textContent).toContain('1');
+    expect(fixture.nativeElement.textContent).toContain('2');
+    expect(fixture.nativeElement.textContent).toContain('Suivant');
+    expect(fixture.nativeElement.querySelectorAll('.gallery-car-card').length).toBe(12);
   });
 });
